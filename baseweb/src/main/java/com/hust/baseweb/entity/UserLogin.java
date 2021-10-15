@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name="user_login")
-@Table(name="user_login")
+
 public class UserLogin {
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 

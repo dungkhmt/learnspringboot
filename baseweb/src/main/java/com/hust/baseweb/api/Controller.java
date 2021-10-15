@@ -2,6 +2,7 @@ package com.hust.baseweb.api;
 
 import com.hust.baseweb.entity.UserLogin;
 import com.hust.baseweb.model.AddModel;
+import com.hust.baseweb.model.UserLoginCreateModel;
 import com.hust.baseweb.repo.UserLoginRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,7 @@ public class Controller {
         List<UserLogin> userLoginList = userLoginRepo.findAll();
         return ResponseEntity.ok().body(userLoginList);
     }
-    @GetMapping("/public/list-page-users")
+    @GetMapping("/list-page-users")
     public ResponseEntity<?> listPageUsers(Principal principal,
     @RequestParam int page, @RequestParam int size, Pageable pageable){
         System.out.println("listPageUsers, page = " + page + " size = " + size + ", pageable.page = " + pageable.getPageNumber()
@@ -72,6 +74,17 @@ public class Controller {
         );
 
         return ResponseEntity.ok().body(userLoginPage);
+    }
+
+    @PostMapping("/create-userlogin")
+    public ResponseEntity<?> createUserLogin(Principal principal, @RequestBody UserLoginCreateModel input){
+        System.out.println("createUserLogin, username = " + input.getUserLoginId() + " pwd = " + input.getPassword());
+        UserLogin u = new UserLogin();
+        u.setUserLoginId(input.getUserLoginId());
+        u.setPassword(UserLogin.PASSWORD_ENCODER.encode(input.getPassword()));
+        u.setCreatedStamp(new Date());
+        u  = userLoginRepo.save(u);
+        return ResponseEntity.ok().body(u);
     }
 }
 
